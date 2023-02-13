@@ -30,6 +30,7 @@ xorNg = bytes([
     221, 123, 176, 58, 56, 172, 115, 17, 3, 152, 124,
     90, 80, 111, 202, 150, 108, 123, 194, 167,
 ])
+zero = bytes([0, 0, 0, 0])
 
 SHA1 = hashlib.sha1
 
@@ -98,21 +99,9 @@ def calculate_u(A:bytes, B:bytes) -> bytes:
 def calculate_interleaved(s_key:bytes) -> bytes:
     '''
     session key
-        The SHA_Interleave function used in SRP-SHA1 is used to generate a
-    session key that is twice as long as the 160-bit output of SHA1.  To
-    compute this function, remove all leading zero bytes from the input.
-    If the length of the resulting string is odd, also remove the first
-    byte.  Call the resulting string T.  Extract the even-numbered bytes
-    into a string E and the odd-numbered bytes into a string F, i.e.
     '''
-    length = len(s_key)
-    for index, item in enumerate(s_key):
-        if item != 0 and (length - index) % 2 == 0:
-            if index == 0:
-                break
-            else:
-                s_key = s_key[index:]
-                break
+    while s_key[0] == 0:
+        s_key = s_key[2:]
     E = s_key[0::2]
     F = s_key[1::2]
     G = SHA1(E).digest()
@@ -210,7 +199,6 @@ def calculate_world_server_proof(username:str, client_seed:bytes, server_seed:by
     '''
     SHA1( username | 0 | client_seed | server_seed | session_key )
     '''
-    zero = bytes([0, 0, 0, 0])
     return SHA1(username.upper().encode() + zero + client_seed + server_seed + session_key).digest()
 
 

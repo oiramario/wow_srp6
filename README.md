@@ -40,6 +40,7 @@ Implementation Guide for the World of Warcraft flavor of SRP6.
         221, 123, 176, 58, 56, 172, 115, 17, 3, 152, 124,
         90, 80, 111, 202, 150, 108, 123, 194, 167,
     ])
+    zero = bytes([0, 0, 0, 0])
     SHA1 = hashlib.sha1
 ```
 
