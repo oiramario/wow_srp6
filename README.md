@@ -171,6 +171,53 @@ Implementation Guide for the World of Warcraft flavor of SRP6.
     ...
 ```
 
+### Optimization
+```python
+def encrypt(data:bytes, session_key:bytes) -> bytes:
+    '''
+    E = (x ^ S) + L
+    '''
+    index = 0
+    last_value = 0
+    size = len(data)
+    result = (c_ubyte * size)()
+    session_key_length = len(session_key)
+    for n in range(size):
+        unencrypted = data[n]
+        encrypted = (unencrypted ^ session_key[index]) + last_value
+        index = (index + 1) % session_key_length
+        last_value = encrypted
+        result[n] = encrypted
+    return bytes(result)
+
+
+def decrypt(data:bytes, session_key:bytes) -> bytes:
+    '''
+    x = (E - L) ^ S
+    '''
+    index = 0
+    last_value = 0
+    size = len(data)
+    result = (c_ubyte * size)()
+    session_key_length = len(session_key)
+    for n in range(size):
+        encrypted = data[n]
+        unencrypted = (encrypted - last_value) ^ session_key[index]
+        index = (index + 1) % session_key_length
+        last_value = encrypted
+        result[n] = unencrypted
+    return bytes(result)
+```
+```
+    20KB, 100 times, seconds.
+    py     : 3.9416035999999997      1.00x
+    py[x]  : 1.0183945999999997      3.87x
+    pyx    : 0.0597205000000000     66.00x
+    cpp    : 0.1308378999999995     30.12x
+    c+pyapi: 0.0492679000000002     80.00x
+```
+
+
 ## External Resources
 
 * RFC 2945 - The SRP Authentication and Key Exchange System
