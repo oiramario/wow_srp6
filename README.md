@@ -209,12 +209,12 @@ def decrypt(data:bytes, session_key:bytes) -> bytes:
     return bytes(result)
 ```
 ```
-    20KB, 100 times, seconds.
-    py     : 3.9416035999999997      1.00x
-    py[x]  : 1.0183945999999997      3.87x
-    pyx    : 0.0597205000000000     66.00x
-    cpp    : 0.1308378999999995     30.12x
-    c+pyapi: 0.0492679000000002     80.00x
+    8K, 100 times, seconds.
+    py     : 1.4836305      1.00x
+    py[x]  : 0.3124920      4.74x
+    pyx    : 0.0106925    138.75x
+    cpp    : 0.0470868     31.50x
+    c+pyapi: 0.0081375    182.31x
 ```
 
 
